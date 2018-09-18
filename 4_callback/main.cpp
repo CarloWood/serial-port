@@ -10,6 +10,13 @@ using namespace std;
 
 void received(const char *data, unsigned int len)
 {
+    static bool been_here = false;
+    if (!been_here)
+    {
+      Debug(NAMESPACE_DEBUG::init_thread());
+      been_here = true;
+    }
+
     DoutEntering(dc::notice|flush_cf, "received(\"" << libcwd::buf2str(data, len) << "\", " << len << ")");
 
 #if 0
