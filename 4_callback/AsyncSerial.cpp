@@ -17,7 +17,7 @@
  * On Mac OS X boost asio's serial ports have bugs, and the usual implementation
  * of this class does not work. So a workaround class was written temporarily,
  * until asio (hopefully) will fix Mac compatibility for serial ports.
- * 
+ *
  * Please note that unlike said in the documentation on OS X until asio will
  * be fixed serial port *writes* are *not* asynchronous, but at least
  * asynchronous *read* works.
@@ -239,7 +239,7 @@ void AsyncSerial::writeEnd(const boost::system::error_code& error)
         {
             pimpl->writeBuffer.reset();
             pimpl->writeBufferSize=0;
-            
+
             return;
         }
         pimpl->writeBufferSize=pimpl->writeQueue.size();
@@ -301,7 +301,7 @@ public:
     mutable boost::mutex errorMutex; ///< Mutex for access to error
 
     int fd; ///< File descriptor for serial port
-    
+
     char readBuffer[AsyncSerial::readBufferSize]; ///< data being read
 
     /// Read complete callback
@@ -332,16 +332,16 @@ void AsyncSerial::open(const std::string& devname, unsigned int baud_rate,
     if(isOpen()) close();
 
     setErrorStatus(true);//If an exception is thrown, error remains true
-    
+
     struct termios new_attributes;
     speed_t speed;
     int status;
-    
+
     // Open port
     pimpl->fd=::open(devname.c_str(), O_RDWR | O_NOCTTY | O_NONBLOCK);
     if (pimpl->fd<0) throw(boost::system::system_error(
             boost::system::error_code(),"Failed to open port"));
-    
+
     // Set Port parameters.
     status=tcgetattr(pimpl->fd,&new_attributes);
     if(status<0  || !isatty(pimpl->fd))

@@ -54,7 +54,7 @@ int main(int argc, char* argv[])
                 cerr<<"Error: serial port unexpectedly closed"<<endl;
                 break;
             }
-            
+
         }
         quit:
         serial.close();
