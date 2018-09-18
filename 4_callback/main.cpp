@@ -1,5 +1,6 @@
 #include "sys.h"
 #include "debug.h"
+#include <libcwd/buf2str.h>
 #include "AsyncSerial.h"
 
 #include <iostream>
@@ -9,6 +10,8 @@ using namespace std;
 
 void received(const char *data, unsigned int len)
 {
+    DoutEntering(dc::notice, "received(\"" << libcwd::buf2str(data, len) << "\", " << len << ")");
+
     vector<char> v(data,data+len);
     for(unsigned int i=0;i<v.size();i++)
     {
@@ -49,6 +52,7 @@ int main(int UNUSED_ARG(argc), char* UNUSED_ARG(argv)[])
     try {
         //CallbackAsyncSerial serial(argv[1],stoi(argv[2]));
         CallbackAsyncSerial serial("/dev/ttyACM0",115200);
+        Dout(dc::notice, "Calling serial.setCallback(received)");
         serial.setCallback(received);
         for(;;)
         {
@@ -60,6 +64,7 @@ int main(int UNUSED_ARG(argc), char* UNUSED_ARG(argv)[])
 
         }
 //        quit:
+        Dout(dc::notice, "Calling serial.close()");
         serial.close();
     } catch (std::exception& e) {
         cerr<<"Exception: "<<e.what()<<endl;
