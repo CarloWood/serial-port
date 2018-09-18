@@ -24,6 +24,7 @@ void received(const char *data, unsigned int len)
 
 int main(int argc, char* argv[])
 {
+    /*
     if(argc!=3)
     {
         cerr<<"Usage: serial port baudrate"<<endl<<
@@ -38,12 +39,13 @@ int main(int argc, char* argv[])
     new_settings.c_lflag &= (~ICANON);
     new_settings.c_lflag &= (~ISIG); // don't automatically handle control-C
     new_settings.c_lflag &= ~(ECHO); // no echo
-    tcsetattr(0, TCSANOW, &new_settings);
+    tcsetattr(0, TCSANOW, &new_settings);*/
 
-    cout<<"\e[2J\e[1;1H"; //Clear screen and put cursor to 1;1
+    //cout<<"\e[2J\e[1;1H"; //Clear screen and put cursor to 1;1
 
     try {
-        CallbackAsyncSerial serial(argv[1],stoi(argv[2]));
+        //CallbackAsyncSerial serial(argv[1],stoi(argv[2]));
+        CallbackAsyncSerial serial("/dev/ttyACM0",115200);
         serial.setCallback(received);
         for(;;)
         {
@@ -52,23 +54,7 @@ int main(int argc, char* argv[])
                 cerr<<"Error: serial port unexpectedly closed"<<endl;
                 break;
             }
-            char c;
-            cin.get(c); //blocking wait for standard input
-            if(c==3) //if Ctrl-C
-            {
-                cin.get(c);
-                switch(c)
-                {
-                    case 3:
-                        serial.write(&c,1);//Ctrl-C + Ctrl-C, send Ctrl-C
-                    break;
-                    case 'x': //fall-through
-                    case 'X':
-                        goto quit;//Ctrl-C + x, quit
-                    default:
-                        serial.write(&c,1);//Ctrl-C + any other char, ignore
-                }
-            } else serial.write(&c,1);
+            
         }
         quit:
         serial.close();
@@ -76,5 +62,5 @@ int main(int argc, char* argv[])
         cerr<<"Exception: "<<e.what()<<endl;
     }
 
-    tcsetattr(0, TCSANOW, &stored_settings);
+    //tcsetattr(0, TCSANOW, &stored_settings);
 }
