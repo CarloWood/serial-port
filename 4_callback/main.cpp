@@ -1,4 +1,5 @@
-
+#include "sys.h"
+#include "debug.h"
 #include "AsyncSerial.h"
 
 #include <iostream>
@@ -22,8 +23,10 @@ void received(const char *data, unsigned int len)
     cout.flush();//Flush screen buffer
 }
 
-int main(int argc, char* argv[])
+int main(int UNUSED_ARG(argc), char* UNUSED_ARG(argv)[])
 {
+    Debug(NAMESPACE_DEBUG::init());
+
     /*
     if(argc!=3)
     {
@@ -56,11 +59,13 @@ int main(int argc, char* argv[])
             }
 
         }
-        quit:
+//        quit:
         serial.close();
     } catch (std::exception& e) {
         cerr<<"Exception: "<<e.what()<<endl;
     }
 
     //tcsetattr(0, TCSANOW, &stored_settings);
+
+    Dout(dc::notice, "Leaving main()...");
 }
