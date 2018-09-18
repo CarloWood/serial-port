@@ -108,7 +108,8 @@ void AsyncSerial::open(const std::string& devname, unsigned int baud_rate,
     //This gives some work to the io_service before it is started
     pimpl->io.post(boost::bind(&AsyncSerial::doRead, this));
 
-    thread t(boost::bind(&asio::io_service::run, &pimpl->io));
+    //thread t(boost::bind(&asio::io_service::run, &pimpl->io));
+    thread t([&](){ Debug(NAMESPACE_DEBUG::init_thread()); pimpl->io.run(); });
     pimpl->backgroundThread.swap(t);
     setErrorStatus(false);//If we get here, no error
     pimpl->open=true; //Port is now open
