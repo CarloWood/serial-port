@@ -10,7 +10,7 @@ using namespace std;
 
 void received(const char *data, unsigned int len)
 {
-    DoutEntering(dc::notice, "received(\"" << libcwd::buf2str(data, len) << "\", " << len << ")");
+    DoutEntering(dc::notice|flush_cf, "received(\"" << libcwd::buf2str(data, len) << "\", " << len << ")");
 
     vector<char> v(data,data+len);
     for(unsigned int i=0;i<v.size();i++)
@@ -56,9 +56,10 @@ int main(int UNUSED_ARG(argc), char* UNUSED_ARG(argv)[])
         serial.setCallback(received);
         for(;;)
         {
+            Dout(dc::notice, "serial.errorStatus() == " << serial.errorStatus() << "; serial.isOpen() == " << serial.isOpen());
             if(serial.errorStatus() || serial.isOpen()==false)
             {
-                cerr<<"Error: serial port unexpectedly closed"<<endl;
+                Dout(dc::notice, "Error: serial port unexpectedly closed");
                 break;
             }
 
@@ -67,7 +68,7 @@ int main(int UNUSED_ARG(argc), char* UNUSED_ARG(argv)[])
         Dout(dc::notice, "Calling serial.close()");
         serial.close();
     } catch (std::exception& e) {
-        cerr<<"Exception: "<<e.what()<<endl;
+        Dout(dc::notice, "Exception: " << e.what());
     }
 
     //tcsetattr(0, TCSANOW, &stored_settings);
