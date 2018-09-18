@@ -12,6 +12,7 @@ void received(const char *data, unsigned int len)
 {
     DoutEntering(dc::notice|flush_cf, "received(\"" << libcwd::buf2str(data, len) << "\", " << len << ")");
 
+#if 0
     vector<char> v(data,data+len);
     for(unsigned int i=0;i<v.size();i++)
     {
@@ -24,6 +25,7 @@ void received(const char *data, unsigned int len)
         }
     }
     cout.flush();//Flush screen buffer
+#endif
 }
 
 int main(int UNUSED_ARG(argc), char* UNUSED_ARG(argv)[])
