@@ -54,11 +54,14 @@ int main(int UNUSED_ARG(argc), char* UNUSED_ARG(argv)[])
         CallbackAsyncSerial serial("/dev/ttyACM0",115200);
         Dout(dc::notice, "Calling serial.setCallback(received)");
         serial.setCallback(received);
+        Dout(dc::notice|continued_cf, "Entering for loop");
         for(;;)
         {
-            Dout(dc::notice, "serial.errorStatus() == " << serial.errorStatus() << "; serial.isOpen() == " << serial.isOpen());
+            Dout(dc::continued, '.');
             if(serial.errorStatus() || serial.isOpen()==false)
             {
+                Dout(dc::finish, "");
+                Dout(dc::notice, "serial.errorStatus() == " << serial.errorStatus() << "; serial.isOpen() == " << serial.isOpen());
                 Dout(dc::notice, "Error: serial port unexpectedly closed");
                 break;
             }
