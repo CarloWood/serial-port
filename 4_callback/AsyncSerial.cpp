@@ -213,14 +213,14 @@ void AsyncSerial::readEnd(const boost::system::error_code& error,
             return;
         }
         #endif //__APPLE__
-        if (error.value() == 2)
+        if (error.value() == 2 && bytes_transferred == 0)
         {
           auto current_time = clock_type::now();
           time_point::duration delta = current_time - m_last_read;
           double microseconds = std::chrono::duration_cast<std::chrono::microseconds>(delta).count();
           Dout(dc::notice, "Last read was " << microseconds << " microseconds ago.");
           ++m_failures;
-          if (microseconds < 5000 || m_failures < 2)
+          if (microseconds < 5000 || m_failures <= 2)
           {
             doRead();
             Dout(dc::notice, "Leaving AsyncSerial::readEnd() 1.");
