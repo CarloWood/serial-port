@@ -222,6 +222,7 @@ void AsyncSerial::readEnd(const boost::system::error_code& error,
           ++m_failures;
           if (microseconds < 5000 || m_failures <= 2)
           {
+            setErrorStatus(false);
             doRead();
             Dout(dc::notice, "Leaving AsyncSerial::readEnd() 1.");
             return;
