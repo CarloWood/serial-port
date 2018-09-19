@@ -222,8 +222,8 @@ void AsyncSerial::readEnd(const boost::system::error_code& error,
     } else {
         if(pimpl->callback) pimpl->callback(pimpl->readBuffer,
                 bytes_transferred);
-        doRead();
         std::this_thread::sleep_for(std::chrono::milliseconds(2));
+        //doRead();
     }
 }
 

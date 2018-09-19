@@ -11,6 +11,7 @@
 #include <vector>
 #include <memory>
 #include <functional>
+#include <chrono>
 #include <boost/asio.hpp>
 #include <boost/utility.hpp>
 
@@ -25,6 +26,10 @@ class AsyncSerialImpl;
  */
 class AsyncSerial: private boost::noncopyable
 {
+    using clock_type = std::chrono::high_resolution_clock;
+    using time_point = std::chrono::time_point<clock_type>;
+    time_point m_last_read;
+
 public:
     AsyncSerial();
 
