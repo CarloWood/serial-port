@@ -195,6 +195,7 @@ void AsyncSerial::doRead()
             this,
             asio::placeholders::error,
             asio::placeholders::bytes_transferred));
+    Dout(dc::notice, "Leaving AsyncSerial::doRead()");
 }
 
 void AsyncSerial::readEnd(const boost::system::error_code& error,
@@ -225,6 +226,7 @@ void AsyncSerial::readEnd(const boost::system::error_code& error,
         std::this_thread::sleep_for(std::chrono::milliseconds(2));
         //doRead();
     }
+    Dout(dc::notice, "Leaving AsyncSerial::readEnd()");
 }
 
 void AsyncSerial::doWrite()
