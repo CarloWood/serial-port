@@ -72,7 +72,7 @@ public:
     std::function<void (const char*, size_t)> callback;
 };
 
-AsyncSerial::AsyncSerial(): pimpl(new AsyncSerialImpl)
+AsyncSerial::AsyncSerial(): m_failures(0), pimpl(new AsyncSerialImpl)
 {
   DoutEntering(dc::notice, "AsyncSerial::AsyncSerial()");
 }
@@ -213,6 +213,20 @@ void AsyncSerial::readEnd(const boost::system::error_code& error,
             return;
         }
         #endif //__APPLE__
+        if (error.value() == 2)
+        {
+          auto current_time = clock_type::now();
+          time_point::duration delta = current_time - m_last_read;
+          double microseconds = std::chrono::duration_cast<std::chrono::microseconds>(delta).count();
+          Dout(dc::notice, "Last read was " << microseconds << " microseconds ago.");
+          ++m_failures;
+          if (microseconds < 5000 || m_failures < 2)
+          {
+            doRead();
+            Dout(dc::notice, "Leaving AsyncSerial::readEnd() 1.");
+            return;
+          }
+        }
         //error can be true even because the serial port was closed.
         //In this case it is not a real error, so ignore
         if(isOpen())
@@ -221,12 +235,13 @@ void AsyncSerial::readEnd(const boost::system::error_code& error,
             setErrorStatus(true);
         }
     } else {
+        m_last_read = clock_type::now();
+        m_failures = 0;
         if(pimpl->callback) pimpl->callback(pimpl->readBuffer,
                 bytes_transferred);
-        std::this_thread::sleep_for(std::chrono::milliseconds(2));
         doRead();
     }
-    Dout(dc::notice, "Leaving AsyncSerial::readEnd()");
+    Dout(dc::notice, "Leaving AsyncSerial::readEnd() 2.");
 }
 
 void AsyncSerial::doWrite()

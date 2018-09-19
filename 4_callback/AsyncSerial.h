@@ -29,6 +29,7 @@ class AsyncSerial: private boost::noncopyable
     using clock_type = std::chrono::high_resolution_clock;
     using time_point = std::chrono::time_point<clock_type>;
     time_point m_last_read;
+    int m_failures;
 
 public:
     AsyncSerial();
